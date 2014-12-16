@@ -335,12 +335,19 @@ public class VentanaPrincipal {
 				
 				if(TfNEmpI.getText().equals("") || TfApeI.getText().equals("") || TfOfiI.getText().equals("") || TfSalI.getText().equals("") ||
 				TfComI.getText().equals("")){
+					
 					JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
+					
 				} else{
-					dep = Metodos.ConsultarDep((byte) CBDepI.getSelectedItem());
-					Metodos.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
-						Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());			
-			
+					
+					if(Metodos.ConsultarEmp(Short.parseShort(TfNEmpI.getText())) == null){
+						dep = Metodos.ConsultarDep((byte) CBDepI.getSelectedItem());
+						Metodos.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
+							Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());				
+						
+					} else { 
+						JOptionPane.showMessageDialog(null, "El empleado ya existe");
+						 }
 			
 				}
 			}
@@ -424,7 +431,8 @@ public class VentanaPrincipal {
 		btnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				try{
+				if(Metodos.ConsultarEmp(Short.parseShort(TfNEmpM.getText())) != null){
+					
 					emp = Metodos.ConsultarEmp(Short.parseShort(TfNEmpM.getText()));
 					TfApeM.setText(emp.getApellido());
 					TfOfiM.setText(emp.getOficio());
@@ -432,7 +440,8 @@ public class VentanaPrincipal {
 					TfComM.setText(String.valueOf(emp.getComision()));
 					CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
 					CBDirM.setSelectedItem(emp.getDir());
-				} catch (ObjectNotFoundException ofe){ JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
+					
+				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
 				
 			}
 		});

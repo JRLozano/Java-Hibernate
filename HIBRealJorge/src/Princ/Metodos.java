@@ -63,7 +63,7 @@ public class Metodos {
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
 		
-		Empleados emp = (Empleados) session.load(Empleados.class, nEmp);	
+		Empleados emp = (Empleados) session.get(Empleados.class, nEmp);	
 		return emp;		
 	}
 	
@@ -71,7 +71,7 @@ public class Metodos {
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
 		
-		Departamentos dep = (Departamentos) session.load(Departamentos.class, nDep);
+		Departamentos dep = (Departamentos) session.get(Departamentos.class, nDep);
 		return dep;
 	}
 
@@ -122,14 +122,17 @@ public class Metodos {
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();
 		Session session = sesion.openSession();
 		Transaction tx = session.beginTransaction();
+		java.util.Date hoy = new java.util.Date();
+		java.sql.Date fhoy = new java.sql.Date(hoy.getTime());
 		
 		if(ConsultarEmp(nEmp) != null){
 			
 			Empleados emp = new Empleados();
-			//emp.setEmpNo(nEmp);
+			emp.setEmpNo(nEmp);
 			emp.setApellido(apellido);
 			emp.setOficio(oficio);
 			emp.setSalario(salario);
+			emp.setFechaAlt(fhoy);
 			emp.setComision(comision);
 			emp.setDepartamentos(dep);
 			emp.setDir(Dir);
