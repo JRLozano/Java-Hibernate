@@ -25,12 +25,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.hibernate.ObjectNotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 
 import primero.Departamentos;
 import primero.Empleados;
 
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 
 public class VentanaPrincipal {	
@@ -43,7 +43,7 @@ public class VentanaPrincipal {
 	private JTextField TfApeI;
 	private JTextField TfOfiI;
 	private JTextField TfSalI;
-	private JTextField TfComisM;
+	private JTextField TfComM;
 	private JTextField TfSalM;
 	private JTextField TfOfiM;
 	private JTextField TfApeM;
@@ -331,12 +331,18 @@ public class VentanaPrincipal {
 		
 		JButton btnInsertarEmpleado = new JButton("Insertar Empleado");
 		btnInsertarEmpleado.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				dep = Metodos.ConsultarDep((byte) CBDepI.getSelectedItem());
-				Metodos.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
-						Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());
+			public void actionPerformed(ActionEvent arg0) {	
 				
+				if(TfNEmpI.getText().equals("") || TfApeI.getText().equals("") || TfOfiI.getText().equals("") || TfSalI.getText().equals("") ||
+				TfComI.getText().equals("")){
+					JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
+				} else{
+					dep = Metodos.ConsultarDep((byte) CBDepI.getSelectedItem());
+					Metodos.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
+						Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());			
+			
+			
+				}
 			}
 		});
 		btnInsertarEmpleado.setBounds(225, 188, 150, 50);
@@ -371,10 +377,10 @@ public class VentanaPrincipal {
 		label_4.setBounds(26, 128, 132, 14);
 		ModEmp.add(label_4);
 		
-		TfComisM = new JTextField();
-		TfComisM.setColumns(10);
-		TfComisM.setBounds(168, 126, 86, 20);
-		ModEmp.add(TfComisM);
+		TfComM = new JTextField();
+		TfComM.setColumns(10);
+		TfComM.setBounds(168, 126, 86, 20);
+		ModEmp.add(TfComM);
 		
 		TfSalM = new JTextField();
 		TfSalM.setColumns(10);
@@ -423,15 +429,10 @@ public class VentanaPrincipal {
 					TfApeM.setText(emp.getApellido());
 					TfOfiM.setText(emp.getOficio());
 					TfSalM.setText(String.valueOf(emp.getSalario()));
-					TfComisM.setText(String.valueOf(emp.getComision()));
+					TfComM.setText(String.valueOf(emp.getComision()));
 					CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
 					CBDirM.setSelectedItem(emp.getDir());
-				} catch (ObjectNotFoundException one){ JOptionPane.showMessageDialog(null, "El empleado no existe"); }
-				
-				
-				
-				
-				
+				} catch (ObjectNotFoundException ofe){ JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
 				
 			}
 		});
@@ -439,12 +440,49 @@ public class VentanaPrincipal {
 		ModEmp.add(btnConsultar);
 		
 		JButton btnModificar = new JButton("Modificar");
+		btnModificar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(TfNEmpM.getText().equals("") || TfApeM.getText().equals("") || TfOfiM.getText().equals("") || TfSalM.getText().equals("") ||
+						TfComM.getText().equals("")){
+							JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
+						} else{
+				dep = Metodos.ConsultarDep((byte) CBDepM.getSelectedItem());
+				Metodos.ModificarEmp(Short.parseShort(TfNEmpM.getText()), TfApeM.getText(), TfOfiM.getText(), Float.parseFloat(TfSalM.getText()), 
+						Float.parseFloat(TfComM.getText()), dep, (short) CBDirM.getSelectedItem());
+			}
+			}
+		});
 		btnModificar.setBounds(228, 182, 150, 50);
 		ModEmp.add(btnModificar);
 		
 		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Metodos.EliminarEmp(Short.parseShort(TfNEmpM.getText()));		
+			}
+		});
 		btnEliminar.setBounds(422, 182, 150, 50);
 		ModEmp.add(btnEliminar);
+		
+		JButton btnPrimerRegistro = new JButton("Primer Registro");
+		btnPrimerRegistro.setBounds(28, 257, 110, 23);
+		ModEmp.add(btnPrimerRegistro);
+		
+		JButton btnSiguienteRegistro = new JButton("Siguiente Registro");
+		btnSiguienteRegistro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnSiguienteRegistro.setBounds(168, 257, 132, 23);
+		ModEmp.add(btnSiguienteRegistro);
+		
+		JButton btnAnteriorRegistro = new JButton("Anterior Registro");
+		btnAnteriorRegistro.setBounds(310, 257, 126, 23);
+		ModEmp.add(btnAnteriorRegistro);
+		
+		JButton btnUltimoRegistros = new JButton("Ultimo Registros");
+		btnUltimoRegistros.setBounds(483, 257, 89, 23);
+		ModEmp.add(btnUltimoRegistros);
 		
 		JPanel InsDep = new JPanel();
 		tabbedPane.addTab("Insertar Departamento", null, InsDep, null);

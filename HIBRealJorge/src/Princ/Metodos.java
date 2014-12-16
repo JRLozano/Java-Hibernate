@@ -11,6 +11,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import primero.Departamentos;
 import primero.Empleados;
 import primero.SessionFactoryUtil;
@@ -57,29 +59,6 @@ public class Metodos {
 		return E;
 	}
 	
-	public static void InsertarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir){
-		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
-		Session session = sesion.openSession();
-		java.util.Date hoy = new java.util.Date();
-		java.sql.Date fhoy = new java.sql.Date(hoy.getTime());
-		Transaction tx = session.beginTransaction();
-		
-		Empleados emp = new Empleados();
-		emp.setEmpNo(nEmp);
-		emp.setApellido(apellido);
-		emp.setOficio(oficio);
-		emp.setSalario(salario);
-		emp.setFechaAlt(fhoy);
-		emp.setComision(comision);
-		emp.setDepartamentos(dep);
-		emp.setDir(Dir);
-		
-		
-		session.save(emp);
-		tx.commit();
-		
-	}
-	
 	public static Empleados ConsultarEmp(short nEmp){	
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
@@ -94,6 +73,71 @@ public class Metodos {
 		
 		Departamentos dep = (Departamentos) session.load(Departamentos.class, nDep);
 		return dep;
+	}
+
+	public static void InsertarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir){
+		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
+		Session session = sesion.openSession();
+		java.util.Date hoy = new java.util.Date();
+		java.sql.Date fhoy = new java.sql.Date(hoy.getTime());
+		Transaction tx = session.beginTransaction();
+		
+		if(ConsultarEmp(nEmp) == null){
+			
+			Empleados emp = new Empleados();
+			emp.setEmpNo(nEmp);
+			emp.setApellido(apellido);
+			emp.setOficio(oficio);
+			emp.setSalario(salario);
+			emp.setFechaAlt(fhoy);
+			emp.setComision(comision);
+			emp.setDepartamentos(dep);
+			emp.setDir(Dir);		
+		
+			session.save(emp);
+			tx.commit();
+		} else {
+			JOptionPane.showMessageDialog(null, "El empleado ya existe");
+			System.out.println(ConsultarEmp(nEmp).getApellido() + " - " + ConsultarEmp(nEmp).getSalario());
+		}
+		
+		
+		
+	}
+	
+	public static void EliminarEmp(short nEmp){
+		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
+		Session session = sesion.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		if(ConsultarEmp(nEmp) != null){
+			Empleados emp = (Empleados) session.load(Empleados.class, nEmp);
+			session.delete(emp);
+			tx.commit();
+		} else JOptionPane.showMessageDialog(null, "El empleado no existe");
+		
+	}
+	
+	public static void ModificarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir){
+		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		if(ConsultarEmp(nEmp) != null){
+			
+			Empleados emp = new Empleados();
+			//emp.setEmpNo(nEmp);
+			emp.setApellido(apellido);
+			emp.setOficio(oficio);
+			emp.setSalario(salario);
+			emp.setComision(comision);
+			emp.setDepartamentos(dep);
+			emp.setDir(Dir);
+		
+		
+			session.update(emp);
+			tx.commit();
+		} else JOptionPane.showMessageDialog(null, "El empleado no existe");		
 	}
 	
 }
