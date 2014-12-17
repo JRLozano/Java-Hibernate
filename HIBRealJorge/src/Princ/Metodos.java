@@ -40,10 +40,19 @@ public class Metodos {
 		return D;
 	}
 	
-	public static Empleados[] listarEmp(){
+	public static Empleados[] listarEmp(int op){
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
-		Query q = session.createQuery("FROM Empleados WHERE oficio IN ('DIRECTOR', 'PRESIDENTE', 'ANALISTA')");
+		Query q = null;
+		switch(op){
+		case 1:
+			q = session.createQuery("FROM Empleados WHERE oficio IN ('DIRECTOR', 'PRESIDENTE', 'ANALISTA')");
+			break;
+		case 2:
+			q = session.createQuery("FROM Empleados order by empNo");
+			break;
+		}
+		
 		
 		List<Empleados> listaEmp = q.list();
 		Iterator<?> iter = q.iterate();

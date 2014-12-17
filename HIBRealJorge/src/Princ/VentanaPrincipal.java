@@ -31,6 +31,8 @@ import primero.Departamentos;
 import primero.Empleados;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 
 public class VentanaPrincipal {	
@@ -52,6 +54,9 @@ public class VentanaPrincipal {
 	private JComboBox CBDirI;
 	private JComboBox CBDepM;
 	private JComboBox CBDirM;	
+	private int i;
+	private Departamentos[] departamentos = Metodos.listarDep();
+	Empleados[] empleados = Metodos.listarEmp(2);
 	
 	Empleados emp = new Empleados();
 	Departamentos dep = new Departamentos();
@@ -216,7 +221,7 @@ public class VentanaPrincipal {
 						System.out.println(D[i].getDnombre());
 					}
 					
-					Empleados[] directores = Metodos.listarEmp();
+					Empleados[] directores = Metodos.listarEmp(1);
 					for (int i = 0; i <= directores.length - 1; i++){
 						CBDirM.addItem(directores[i].getEmpNo());
 						System.out.println(directores[i].getEmpNo());
@@ -244,7 +249,7 @@ public class VentanaPrincipal {
 						System.out.println(D[i].getDnombre());
 					}
 					
-					Empleados[] directores = Metodos.listarEmp();
+					Empleados[] directores = Metodos.listarEmp(1);
 					for (int i = 0; i <= directores.length - 1; i++){
 						CBDirI.addItem(directores[i].getEmpNo());
 						System.out.println(directores[i].getEmpNo());
@@ -390,6 +395,7 @@ public class VentanaPrincipal {
 		ModEmp.add(TfComM);
 		
 		TfSalM = new JTextField();
+		
 		TfSalM.setColumns(10);
 		TfSalM.setBounds(168, 101, 86, 20);
 		ModEmp.add(TfSalM);
@@ -441,6 +447,8 @@ public class VentanaPrincipal {
 					CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
 					CBDirM.setSelectedItem(emp.getDir());
 					
+					empleados = emp;
+					
 				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
 				
 			}
@@ -474,23 +482,91 @@ public class VentanaPrincipal {
 		ModEmp.add(btnEliminar);
 		
 		JButton btnPrimerRegistro = new JButton("Primer Registro");
+		btnPrimerRegistro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+				Empleados[] empleados = Metodos.listarEmp(2);
+				i = 0;
+				emp = empleados[i];
+				
+				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
+				TfApeM.setText(emp.getApellido());
+				TfOfiM.setText(emp.getOficio());
+				TfSalM.setText(String.valueOf(emp.getSalario()));
+				TfComM.setText(String.valueOf(emp.getComision()));
+				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
+				CBDirM.setSelectedItem(emp.getDir());
+				
+				
+			}
+		});
 		btnPrimerRegistro.setBounds(28, 257, 110, 23);
 		ModEmp.add(btnPrimerRegistro);
 		
 		JButton btnSiguienteRegistro = new JButton("Siguiente Registro");
 		btnSiguienteRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				
+				Empleados[] empleados = Metodos.listarEmp(2);
+				i++;
+				emp = empleados[i];
+				
+				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
+				TfApeM.setText(emp.getApellido());
+				TfOfiM.setText(emp.getOficio());
+				TfSalM.setText(String.valueOf(emp.getSalario()));
+				TfComM.setText(String.valueOf(emp.getComision()));
+				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
+				CBDirM.setSelectedItem(emp.getDir());
+				
 			}
 		});
 		btnSiguienteRegistro.setBounds(168, 257, 132, 23);
 		ModEmp.add(btnSiguienteRegistro);
 		
 		JButton btnAnteriorRegistro = new JButton("Anterior Registro");
+		btnAnteriorRegistro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				i--;
+				emp = empleados[i];
+				
+				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
+				TfApeM.setText(emp.getApellido());
+				TfOfiM.setText(emp.getOficio());
+				TfSalM.setText(String.valueOf(emp.getSalario()));
+				TfComM.setText(String.valueOf(emp.getComision()));
+				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
+				CBDirM.setSelectedItem(emp.getDir());
+				
+			}
+		});
 		btnAnteriorRegistro.setBounds(310, 257, 126, 23);
 		ModEmp.add(btnAnteriorRegistro);
 		
-		JButton btnUltimoRegistros = new JButton("Ultimo Registros");
-		btnUltimoRegistros.setBounds(483, 257, 89, 23);
+		JButton btnUltimoRegistros = new JButton("Ultimo Registro");
+		btnUltimoRegistros.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				Empleados[] empleados = Metodos.listarEmp(2);
+				i = empleados.length - 1;
+				emp = empleados[i];
+				
+				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
+				TfApeM.setText(emp.getApellido());
+				TfOfiM.setText(emp.getOficio());
+				TfSalM.setText(String.valueOf(emp.getSalario()));
+				TfComM.setText(String.valueOf(emp.getComision()));
+				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
+				CBDirM.setSelectedItem(emp.getDir());
+				
+			}
+		});
+		btnUltimoRegistros.setBounds(462, 257, 110, 23);
 		ModEmp.add(btnUltimoRegistros);
 		
 		JPanel InsDep = new JPanel();
