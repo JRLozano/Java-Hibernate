@@ -21,13 +21,13 @@ import primero.SessionFactoryUtil;
 public class Metodos {
 
 	
-	public static Departamentos[] listarDep(){
+	public static List listarDep(){
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
 		Query q = session.createQuery("FROM Departamentos");
 		
 		List<Departamentos> listaDep = q.list();
-		Iterator<?> iter = q.iterate();
+		/*Iterator<?> iter = q.iterate();
 		Departamentos[] D = new Departamentos[listaDep.size()];
 		int i = 0;		
 		Departamentos dep;
@@ -36,11 +36,11 @@ public class Metodos {
 			dep = (Departamentos) iter.next();
 			D[i] = dep;
 			i++;
-		}
-		return D;
+		}*/
+		return listaDep;
 	}
 	
-	public static Empleados[] listarEmp(int op){
+	public static List listarEmp(int op){
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
 		Query q = null;
@@ -55,7 +55,7 @@ public class Metodos {
 		
 		
 		List<Empleados> listaEmp = q.list();
-		Iterator<?> iter = q.iterate();
+		/*Iterator<?> iter = q.iterate();
 		Empleados[] E = new Empleados[listaEmp.size()];
 		int i = 0;
 		Empleados emp;
@@ -64,8 +64,8 @@ public class Metodos {
 			emp = (Empleados) iter.next();
 			E[i] = emp;
 			i++;
-		}
-		return E;
+		}*/
+		return listaEmp;
 	}
 	
 	public static Empleados ConsultarEmp(short nEmp){	
@@ -152,4 +152,30 @@ public class Metodos {
 		} else JOptionPane.showMessageDialog(null, "El empleado no existe");		
 	}
 	
+	public static void InsertarDep(byte nDep, String nombre, String localidad){
+		
+		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
+		Session session = sesion.openSession();
+		Transaction tx = session.beginTransaction();
+		Departamentos dep = new Departamentos();
+		
+		if(ConsultarDep(nDep) == null){
+			
+			dep.setDeptNo(nDep);
+			dep.setDnombre(nombre);
+			dep.setLoc(localidad);
+			
+			session.save(dep);
+			tx.commit();
+		} else {
+			JOptionPane.showMessageDialog(null, "El departamento ya existe");
+		}
+		
+	}
+	
+	public static void ModificarDep(byte nDep, String nombre, String localidad){
+		
+		
+		
+	}
 }

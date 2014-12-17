@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,6 +32,7 @@ import primero.Departamentos;
 import primero.Empleados;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
@@ -55,11 +57,17 @@ public class VentanaPrincipal {
 	private JComboBox CBDepM;
 	private JComboBox CBDirM;	
 	private int i;
-	private Departamentos[] departamentos = Metodos.listarDep();
-	Empleados[] empleados = Metodos.listarEmp(2);
+	private List departamentos = Metodos.listarDep();
+	//Empleados[] empleados = Metodos.listarEmp(2);
 	
 	Empleados emp = new Empleados();
 	Departamentos dep = new Departamentos();
+	private JTextField TfNDepI;
+	private JTextField TfNomI;
+	private JTextField TfLocI;
+	private JTextField TfLocM;
+	private JTextField TfNomM;
+	private JTextField TfNDepM;
 	
 	/**
 	 * Launch the application.
@@ -214,7 +222,7 @@ public class VentanaPrincipal {
 			public void stateChanged(ChangeEvent e) {
 			
 				if (tabbedPane.getSelectedIndex() == 1){
-					System.out.println("Pestaña Modificar Empleados");
+					/*System.out.println("Pestaña Modificar Empleados");
 					Departamentos[] D = Metodos.listarDep();
 					for (int i = 0; i <= D.length - 1; i++){
 						CBDepM.addItem((D[i].getDeptNo()));
@@ -225,6 +233,17 @@ public class VentanaPrincipal {
 					for (int i = 0; i <= directores.length - 1; i++){
 						CBDirM.addItem(directores[i].getEmpNo());
 						System.out.println(directores[i].getEmpNo());
+					}*/
+					List depart = Metodos.listarDep();
+					for (int i = 0; i <= depart.size() - 1; i++){
+						CBDepM.addItem((((Departamentos) depart.get(i)).getDeptNo()));
+						System.out.println(((Departamentos) depart.get(i)).getDnombre());
+					}
+					
+					List directores = Metodos.listarEmp(1);
+					for (int i = 0; i <= directores.size() - 1; i++){
+						CBDirM.addItem(((Empleados) directores.get(i)).getEmpNo());
+						System.out.println(((Empleados) directores.get(i)).getEmpNo());
 					}
 				}
 				else if (tabbedPane.getSelectedIndex() == 2){
@@ -243,16 +262,17 @@ public class VentanaPrincipal {
 				
 				if (tabbedPane.getSelectedIndex() == 0){
 					System.out.println("Pestaña Insertar Empleados");
-					Departamentos[] D = Metodos.listarDep();
-					for (int i = 0; i <= D.length - 1; i++){
-						CBDepI.addItem((D[i].getDeptNo()));
-						System.out.println(D[i].getDnombre());
+					//Departamentos[] D = Metodos.listarDep();
+					List depart = Metodos.listarDep();
+					for (int i = 0; i <= depart.size() - 1; i++){
+						CBDepI.addItem((((Departamentos) depart.get(i)).getDeptNo()));
+						System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
-					Empleados[] directores = Metodos.listarEmp(1);
-					for (int i = 0; i <= directores.length - 1; i++){
-						CBDirI.addItem(directores[i].getEmpNo());
-						System.out.println(directores[i].getEmpNo());
+					List directores = Metodos.listarEmp(1);
+					for (int i = 0; i <= directores.size() - 1; i++){
+						CBDirI.addItem(((Empleados) directores.get(i)).getEmpNo());
+						System.out.println(((Empleados) directores.get(i)).getEmpNo());
 					}
 				}				
 			}
@@ -345,15 +365,9 @@ public class VentanaPrincipal {
 					
 				} else{
 					
-					if(Metodos.ConsultarEmp(Short.parseShort(TfNEmpI.getText())) == null){
 						dep = Metodos.ConsultarDep((byte) CBDepI.getSelectedItem());
 						Metodos.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
-							Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());				
-						
-					} else { 
-						JOptionPane.showMessageDialog(null, "El empleado ya existe");
-						 }
-			
+							Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());							
 				}
 			}
 		});
@@ -447,7 +461,7 @@ public class VentanaPrincipal {
 					CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
 					CBDirM.setSelectedItem(emp.getDir());
 					
-					empleados = emp;
+					//empleados
 					
 				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
 				
@@ -486,7 +500,7 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				
-				Empleados[] empleados = Metodos.listarEmp(2);
+				/*Empleados[] empleados = Metodos.listarEmp(2);
 				i = 0;
 				emp = empleados[i];
 				
@@ -496,7 +510,7 @@ public class VentanaPrincipal {
 				TfSalM.setText(String.valueOf(emp.getSalario()));
 				TfComM.setText(String.valueOf(emp.getComision()));
 				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());
+				CBDirM.setSelectedItem(emp.getDir());*/
 				
 				
 			}
@@ -509,7 +523,7 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				
-				Empleados[] empleados = Metodos.listarEmp(2);
+				/*Empleados[] empleados = Metodos.listarEmp(2);
 				i++;
 				emp = empleados[i];
 				
@@ -519,7 +533,7 @@ public class VentanaPrincipal {
 				TfSalM.setText(String.valueOf(emp.getSalario()));
 				TfComM.setText(String.valueOf(emp.getComision()));
 				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());
+				CBDirM.setSelectedItem(emp.getDir());*/
 				
 			}
 		});
@@ -530,7 +544,7 @@ public class VentanaPrincipal {
 		btnAnteriorRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				/*
 				i--;
 				emp = empleados[i];
 				
@@ -541,7 +555,7 @@ public class VentanaPrincipal {
 				TfComM.setText(String.valueOf(emp.getComision()));
 				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
 				CBDirM.setSelectedItem(emp.getDir());
-				
+				*/
 			}
 		});
 		btnAnteriorRegistro.setBounds(310, 257, 126, 23);
@@ -552,7 +566,7 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent e) {
 				
 				
-				Empleados[] empleados = Metodos.listarEmp(2);
+				/*Empleados[] empleados = Metodos.listarEmp(2);
 				i = empleados.length - 1;
 				emp = empleados[i];
 				
@@ -562,7 +576,7 @@ public class VentanaPrincipal {
 				TfSalM.setText(String.valueOf(emp.getSalario()));
 				TfComM.setText(String.valueOf(emp.getComision()));
 				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());
+				CBDirM.setSelectedItem(emp.getDir());*/
 				
 			}
 		});
@@ -573,9 +587,115 @@ public class VentanaPrincipal {
 		tabbedPane.addTab("Insertar Departamento", null, InsDep, null);
 		InsDep.setLayout(null);
 		
+		JLabel lblNumeroDeDepartamento = new JLabel("Numero de Departamento");
+		lblNumeroDeDepartamento.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNumeroDeDepartamento.setBounds(177, 43, 132, 14);
+		InsDep.add(lblNumeroDeDepartamento);
+		
+		JLabel lblNombre = new JLabel("Nombre");
+		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNombre.setBounds(177, 79, 132, 14);
+		InsDep.add(lblNombre);
+		
+		JLabel lblLocalidad = new JLabel("Localidad");
+		lblLocalidad.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblLocalidad.setBounds(177, 120, 132, 14);
+		InsDep.add(lblLocalidad);
+		
+		TfNDepI = new JTextField();
+		TfNDepI.setColumns(10);
+		TfNDepI.setBounds(319, 41, 86, 20);
+		InsDep.add(TfNDepI);
+		
+		TfNomI = new JTextField();
+		TfNomI.setColumns(10);
+		TfNomI.setBounds(319, 77, 86, 20);
+		InsDep.add(TfNomI);
+		
+		TfLocI = new JTextField();
+		TfLocI.setColumns(10);
+		TfLocI.setBounds(319, 118, 86, 20);
+		InsDep.add(TfLocI);
+		
+		JButton btnInsertarDepartamento = new JButton("Insertar Departamento");
+		btnInsertarDepartamento.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Metodos.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText());
+				
+			}
+		});
+		btnInsertarDepartamento.setBounds(212, 167, 150, 50);
+		InsDep.add(btnInsertarDepartamento);
+		
 		JPanel ModDep = new JPanel();
 		tabbedPane.addTab("Modificar Departamento", null, ModDep, null);
 		ModDep.setLayout(null);
+		
+		JButton ConsultarDep = new JButton("Consultar");
+		ConsultarDep.setBounds(32, 158, 150, 50);
+		ModDep.add(ConsultarDep);
+		
+		JButton ModificarDep = new JButton("Modificar");
+		ModificarDep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
+		ModificarDep.setBounds(232, 158, 150, 50);
+		ModDep.add(ModificarDep);
+		
+		JButton EliminarDep = new JButton("Eliminar");
+		EliminarDep.setBounds(426, 158, 150, 50);
+		ModDep.add(EliminarDep);
+		
+		JButton URDep = new JButton("Ultimo Registro");
+		URDep.setBounds(466, 233, 110, 23);
+		ModDep.add(URDep);
+		
+		JButton ARDep = new JButton("Anterior Registro");
+		ARDep.setBounds(314, 233, 126, 23);
+		ModDep.add(ARDep);
+		
+		JButton SRDep = new JButton("Siguiente Registro");
+		SRDep.setBounds(172, 233, 132, 23);
+		ModDep.add(SRDep);
+		
+		JButton PRDep = new JButton("Primer Registro");
+		PRDep.setBounds(32, 233, 110, 23);
+		ModDep.add(PRDep);
+		
+		JLabel label_7 = new JLabel("Numero de Departamento");
+		label_7.setFont(new Font("Tahoma", Font.BOLD, 12));
+		label_7.setBounds(188, 33, 132, 14);
+		ModDep.add(label_7);
+		
+		JLabel label_8 = new JLabel("Nombre");
+		label_8.setFont(new Font("Tahoma", Font.BOLD, 12));
+		label_8.setBounds(188, 69, 132, 14);
+		ModDep.add(label_8);
+		
+		JLabel label_9 = new JLabel("Localidad");
+		label_9.setFont(new Font("Tahoma", Font.BOLD, 12));
+		label_9.setBounds(188, 110, 132, 14);
+		ModDep.add(label_9);
+		
+		TfLocM = new JTextField();
+		TfLocM.setColumns(10);
+		TfLocM.setBounds(330, 108, 86, 20);
+		ModDep.add(TfLocM);
+		
+		TfNomM = new JTextField();
+		TfNomM.setColumns(10);
+		TfNomM.setBounds(330, 67, 86, 20);
+		ModDep.add(TfNomM);
+		
+		TfNDepM = new JTextField();
+		TfNDepM.setColumns(10);
+		TfNDepM.setBounds(330, 31, 86, 20);
+		ModDep.add(TfNDepM);
 		
 		JPanel Estadisticas = new JPanel();
 		tabbedPane.addTab("Estadisticas", null, Estadisticas, null);
