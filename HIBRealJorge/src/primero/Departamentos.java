@@ -30,6 +30,13 @@ public class Departamentos implements java.io.Serializable {
 		this.empleadoses = empleadoses;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		Departamentos dep = (Departamentos) obj;
+		return (deptNo == dep.deptNo);
+	};
+	
+	
 	public byte getDeptNo() {
 		return this.deptNo;
 	}

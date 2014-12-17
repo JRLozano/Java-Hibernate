@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -25,16 +26,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.exception.ConstraintViolationException;
-
 import primero.Departamentos;
 import primero.Empleados;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
-
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 
 public class VentanaPrincipal {	
@@ -57,7 +50,7 @@ public class VentanaPrincipal {
 	private JComboBox CBDepM;
 	private JComboBox CBDirM;	
 	private int i;
-	private List departamentos = Metodos.listarDep();
+	private List departamentos = MetodosDep.listarDep();
 	//Empleados[] empleados = Metodos.listarEmp(2);
 	
 	Empleados emp = new Empleados();
@@ -72,6 +65,9 @@ public class VentanaPrincipal {
 	/**
 	 * Launch the application.
 	 */
+	
+	
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -234,13 +230,13 @@ public class VentanaPrincipal {
 						CBDirM.addItem(directores[i].getEmpNo());
 						System.out.println(directores[i].getEmpNo());
 					}*/
-					List depart = Metodos.listarDep();
+					List depart = MetodosDep.listarDep();
 					for (int i = 0; i <= depart.size() - 1; i++){
 						CBDepM.addItem((((Departamentos) depart.get(i)).getDeptNo()));
 						System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
-					List directores = Metodos.listarEmp(1);
+					List directores = MetodosEmp.listarEmp(1);
 					for (int i = 0; i <= directores.size() - 1; i++){
 						CBDirM.addItem(((Empleados) directores.get(i)).getEmpNo());
 						System.out.println(((Empleados) directores.get(i)).getEmpNo());
@@ -263,13 +259,13 @@ public class VentanaPrincipal {
 				if (tabbedPane.getSelectedIndex() == 0){
 					System.out.println("Pestaña Insertar Empleados");
 					//Departamentos[] D = Metodos.listarDep();
-					List depart = Metodos.listarDep();
+					List<?> depart = MetodosDep.listarDep();
 					for (int i = 0; i <= depart.size() - 1; i++){
 						CBDepI.addItem((((Departamentos) depart.get(i)).getDeptNo()));
 						System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
-					List directores = Metodos.listarEmp(1);
+					List<?> directores = MetodosEmp.listarEmp(1);
 					for (int i = 0; i <= directores.size() - 1; i++){
 						CBDirI.addItem(((Empleados) directores.get(i)).getEmpNo());
 						System.out.println(((Empleados) directores.get(i)).getEmpNo());
@@ -365,8 +361,8 @@ public class VentanaPrincipal {
 					
 				} else{
 					
-						dep = Metodos.ConsultarDep((byte) CBDepI.getSelectedItem());
-						Metodos.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
+						dep = MetodosDep.ConsultarDep((byte) CBDepI.getSelectedItem());
+						MetodosEmp.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
 							Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());							
 				}
 			}
@@ -451,18 +447,15 @@ public class VentanaPrincipal {
 		btnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if(Metodos.ConsultarEmp(Short.parseShort(TfNEmpM.getText())) != null){
+				if(MetodosEmp.ConsultarEmp(Short.parseShort(TfNEmpM.getText())) != null){			
 					
-					emp = Metodos.ConsultarEmp(Short.parseShort(TfNEmpM.getText()));
-					TfApeM.setText(emp.getApellido());
-					TfOfiM.setText(emp.getOficio());
-					TfSalM.setText(String.valueOf(emp.getSalario()));
-					TfComM.setText(String.valueOf(emp.getComision()));
-					CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-					CBDirM.setSelectedItem(emp.getDir());
+					emp = MetodosEmp.ConsultarEmp(Short.parseShort(TfNEmpM.getText()));
+					ImprimirEmp(emp);
 					
-					//empleados
-					
+					List<Empleados> empleados = MetodosEmp.listarEmp(2);
+					i = empleados.indexOf(emp);
+					System.out.println(i);
+									
 				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
 				
 			}
@@ -477,8 +470,8 @@ public class VentanaPrincipal {
 						TfComM.getText().equals("")){
 							JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
 						} else{
-				dep = Metodos.ConsultarDep((byte) CBDepM.getSelectedItem());
-				Metodos.ModificarEmp(Short.parseShort(TfNEmpM.getText()), TfApeM.getText(), TfOfiM.getText(), Float.parseFloat(TfSalM.getText()), 
+				dep = MetodosDep.ConsultarDep((byte) CBDepM.getSelectedItem());
+				MetodosEmp.ModificarEmp(Short.parseShort(TfNEmpM.getText()), TfApeM.getText(), TfOfiM.getText(), Float.parseFloat(TfSalM.getText()), 
 						Float.parseFloat(TfComM.getText()), dep, (short) CBDirM.getSelectedItem());
 			}
 			}
@@ -489,7 +482,7 @@ public class VentanaPrincipal {
 		JButton btnEliminar = new JButton("Eliminar");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Metodos.EliminarEmp(Short.parseShort(TfNEmpM.getText()));		
+				MetodosEmp.EliminarEmp(Short.parseShort(TfNEmpM.getText()));		
 			}
 		});
 		btnEliminar.setBounds(422, 182, 150, 50);
@@ -500,17 +493,10 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				
-				/*Empleados[] empleados = Metodos.listarEmp(2);
+				List<Empleados> empleados = MetodosEmp.listarEmp(2);
 				i = 0;
-				emp = empleados[i];
-				
-				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
-				TfApeM.setText(emp.getApellido());
-				TfOfiM.setText(emp.getOficio());
-				TfSalM.setText(String.valueOf(emp.getSalario()));
-				TfComM.setText(String.valueOf(emp.getComision()));
-				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());*/
+				emp = empleados.get(i);				
+				ImprimirEmp(emp);
 				
 				
 			}
@@ -523,17 +509,10 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				
-				/*Empleados[] empleados = Metodos.listarEmp(2);
+				List<Empleados> empleados = MetodosEmp.listarEmp(2);
 				i++;
-				emp = empleados[i];
-				
-				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
-				TfApeM.setText(emp.getApellido());
-				TfOfiM.setText(emp.getOficio());
-				TfSalM.setText(String.valueOf(emp.getSalario()));
-				TfComM.setText(String.valueOf(emp.getComision()));
-				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());*/
+				emp = empleados.get(i);
+				ImprimirEmp(emp);
 				
 			}
 		});
@@ -544,18 +523,11 @@ public class VentanaPrincipal {
 		btnAnteriorRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				/*
+				List<Empleados> empleados = MetodosEmp.listarEmp(2);
 				i--;
-				emp = empleados[i];
+				emp = empleados.get(i);				
+				ImprimirEmp(emp);
 				
-				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
-				TfApeM.setText(emp.getApellido());
-				TfOfiM.setText(emp.getOficio());
-				TfSalM.setText(String.valueOf(emp.getSalario()));
-				TfComM.setText(String.valueOf(emp.getComision()));
-				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());
-				*/
 			}
 		});
 		btnAnteriorRegistro.setBounds(310, 257, 126, 23);
@@ -566,17 +538,11 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent e) {
 				
 				
-				/*Empleados[] empleados = Metodos.listarEmp(2);
-				i = empleados.length - 1;
-				emp = empleados[i];
+				List<Empleados> empleados = MetodosEmp.listarEmp(2);
+				i = empleados.size() - 1;
+				emp = empleados.get(i);
+				ImprimirEmp(emp);
 				
-				TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
-				TfApeM.setText(emp.getApellido());
-				TfOfiM.setText(emp.getOficio());
-				TfSalM.setText(String.valueOf(emp.getSalario()));
-				TfComM.setText(String.valueOf(emp.getComision()));
-				CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
-				CBDirM.setSelectedItem(emp.getDir());*/
 				
 			}
 		});
@@ -621,7 +587,7 @@ public class VentanaPrincipal {
 		btnInsertarDepartamento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				Metodos.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText());
+				MetodosDep.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText());
 				
 			}
 		});
@@ -633,6 +599,23 @@ public class VentanaPrincipal {
 		ModDep.setLayout(null);
 		
 		JButton ConsultarDep = new JButton("Consultar");
+		ConsultarDep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(MetodosDep.ConsultarDep(Byte.parseByte(TfNDepM.getText())) != null){			
+					
+					dep = MetodosDep.ConsultarDep(Byte.parseByte(TfNDepM.getText()));
+					ImprimirDep(dep);
+					
+					List<Departamentos> departamentos = MetodosDep.listarDep();
+					i = departamentos.indexOf(dep);
+					System.out.println(i);
+									
+				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
+				
+				
+			}
+		});
 		ConsultarDep.setBounds(32, 158, 150, 50);
 		ModDep.add(ConsultarDep);
 		
@@ -640,7 +623,7 @@ public class VentanaPrincipal {
 		ModificarDep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				MetodosDep.ModificarDep(Byte.parseByte(TfNDepI.getText()),TfNomI.getText(), TfLocI.getText());
 				
 			}
 		});
@@ -648,22 +631,62 @@ public class VentanaPrincipal {
 		ModDep.add(ModificarDep);
 		
 		JButton EliminarDep = new JButton("Eliminar");
+		EliminarDep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
 		EliminarDep.setBounds(426, 158, 150, 50);
 		ModDep.add(EliminarDep);
 		
 		JButton URDep = new JButton("Ultimo Registro");
+		URDep.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				List<Departamentos> departamentos = MetodosDep.listarDep();
+				i = departamentos.size() - 1;
+				dep = departamentos.get(i);
+				ImprimirDep(dep);
+			}
+		});
 		URDep.setBounds(466, 233, 110, 23);
 		ModDep.add(URDep);
 		
 		JButton ARDep = new JButton("Anterior Registro");
+		ARDep.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				List<Departamentos> departamentos = MetodosDep.listarDep();
+				i--;
+				dep = departamentos.get(i);
+				ImprimirDep(dep);
+			}
+		});
 		ARDep.setBounds(314, 233, 126, 23);
 		ModDep.add(ARDep);
 		
 		JButton SRDep = new JButton("Siguiente Registro");
+		SRDep.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				List<Departamentos> departamentos = MetodosDep.listarDep();
+				i++;
+				dep = departamentos.get(i);
+				ImprimirDep(dep);
+			}
+		});
 		SRDep.setBounds(172, 233, 132, 23);
 		ModDep.add(SRDep);
 		
 		JButton PRDep = new JButton("Primer Registro");
+		PRDep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				List<Departamentos> departamentos = MetodosDep.listarDep();
+				i = 0;
+				dep = departamentos.get(i);
+				ImprimirDep(dep);
+			}
+		});
 		PRDep.setBounds(32, 233, 110, 23);
 		ModDep.add(PRDep);
 		
@@ -716,4 +739,24 @@ public class VentanaPrincipal {
 		
 		
 	}
+	
+	public void ImprimirEmp(Empleados emp){
+		
+		TfNEmpM.setText(String.valueOf(emp.getEmpNo()));
+		TfApeM.setText(emp.getApellido());
+		TfOfiM.setText(emp.getOficio());
+		TfSalM.setText(String.valueOf(emp.getSalario()));
+		TfComM.setText(String.valueOf(emp.getComision()));
+		CBDepM.setSelectedItem(emp.getDepartamentos().getDeptNo());
+		CBDirM.setSelectedItem(emp.getDir());		
+	}
+	
+	public void ImprimirDep(Departamentos dep){
+		
+		TfNDepM.setText(String.valueOf(dep.getDeptNo()));
+		TfNomM.setText(dep.getDnombre());
+		TfLocM.setText(dep.getLoc());
+	}
+	
+	
 }
