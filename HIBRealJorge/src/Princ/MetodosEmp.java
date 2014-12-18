@@ -1,17 +1,13 @@
 package Princ;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import primero.Departamentos;
 import primero.Empleados;
@@ -34,20 +30,9 @@ public class MetodosEmp {
 		case 2:
 			q = session.createQuery("FROM Empleados order by empNo");
 			break;
-		}
-		
+		}		
 		
 		List<Empleados> listaEmp = q.list();
-		/*Iterator<?> iter = q.iterate();
-		Empleados[] E = new Empleados[listaEmp.size()];
-		int i = 0;
-		Empleados emp;
-		
-		while(iter.hasNext()){
-			emp = (Empleados) iter.next();
-			E[i] = emp;
-			i++;
-		}*/
 		return listaEmp;
 	}
 	
@@ -59,7 +44,7 @@ public class MetodosEmp {
 		return emp;		
 	}
 
-	public static void InsertarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir){
+	public static void InsertarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir, JLabel lbl){
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
 		java.util.Date hoy = new java.util.Date();
@@ -76,20 +61,23 @@ public class MetodosEmp {
 			emp.setFechaAlt(fhoy);
 			emp.setComision(comision);
 			emp.setDepartamentos(dep);
-			emp.setDir(Dir);		
+			emp.setDir(Dir);				
 		
 			session.save(emp);
 			tx.commit();
+			
+			lbl.setText("Empleado insertado");
+			VentanaPrincipal.LimpiarEmp(2);
 		} else {
-			JOptionPane.showMessageDialog(null, "El empleado ya existe");
-			System.out.println(ConsultarEmp(nEmp).getApellido() + " - " + ConsultarEmp(nEmp).getSalario());
+			lbl.setText("El empleado ya existe");
+			//System.out.println(ConsultarEmp(nEmp).getApellido() + " - " + ConsultarEmp(nEmp).getSalario());
 		}
 		
 		
 		
 	}
 	
-	public static void EliminarEmp(short nEmp){
+	public static void EliminarEmp(short nEmp, JLabel lbl){
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
 		Transaction tx = session.beginTransaction();
@@ -98,11 +86,13 @@ public class MetodosEmp {
 			Empleados emp = (Empleados) session.load(Empleados.class, nEmp);
 			session.delete(emp);
 			tx.commit();
-		} else JOptionPane.showMessageDialog(null, "El empleado no existe");
+			VentanaPrincipal.LimpiarEmp(1);
+			lbl.setText("Empleado eliminado");
+		} else lbl.setText("El empleado no existe");
 		
 	}
 	
-	public static void ModificarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir){
+	public static void ModificarEmp(short nEmp, String apellido, String oficio, Float salario, Float comision, Departamentos dep, short Dir, JLabel lbl){
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();
 		Session session = sesion.openSession();
 		Transaction tx = session.beginTransaction();
@@ -119,11 +109,13 @@ public class MetodosEmp {
 			emp.setFechaAlt(fhoy);
 			emp.setComision(comision);
 			emp.setDepartamentos(dep);
-			emp.setDir(Dir);
-		
+			emp.setDir(Dir);			
 		
 			session.update(emp);
 			tx.commit();
+			
+			VentanaPrincipal.LimpiarDep(1);
+			lbl.setText("El empleado ha sido modificado");
 		} else JOptionPane.showMessageDialog(null, "El empleado no existe");		
 	}
 	

@@ -1,0 +1,10 @@
+CREATE VIEW HBIEmps(
+Dep,
+Emps
+) AS (
+SELECT dnombre, COUNT( emp_no ) 
+FROM departamentos
+LEFT JOIN empleados ON departamentos.dept_no = empleados.dept_no
+GROUP BY dnombre
+ORDER BY COUNT( emp_no ) DESC
+)

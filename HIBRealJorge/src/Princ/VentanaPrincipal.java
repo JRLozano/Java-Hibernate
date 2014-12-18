@@ -30,6 +30,12 @@ import primero.Departamentos;
 import primero.Empleados;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 
 public class VentanaPrincipal {	
@@ -37,16 +43,16 @@ public class VentanaPrincipal {
 	
 	private JFrame frame;
 	JTabbedPane tabbedPane;
-	private JTextField TfNEmpI;
-	private JTextField TfComI;
-	private JTextField TfApeI;
-	private JTextField TfOfiI;
-	private JTextField TfSalI;
-	private JTextField TfComM;
-	private JTextField TfSalM;
-	private JTextField TfOfiM;
-	private JTextField TfApeM;
-	private JTextField TfNEmpM;
+	private static JTextField TfNEmpI;
+	private static JTextField TfComI;
+	private static JTextField TfApeI;
+	private static JTextField TfOfiI;
+	private static JTextField TfSalI;
+	private static JTextField TfComM;
+	private static JTextField TfSalM;
+	private static JTextField TfOfiM;
+	private static JTextField TfApeM;
+	private static JTextField TfNEmpM;
 	private JComboBox CBDepI;
 	private JComboBox CBDirI;
 	private JComboBox CBDepM;
@@ -57,19 +63,20 @@ public class VentanaPrincipal {
 	
 	Empleados emp = new Empleados();
 	Departamentos dep = new Departamentos();
-	private JTextField TfNDepI;
-	private JTextField TfNomI;
-	private JTextField TfLocI;
-	private JTextField TfLocM;
-	private JTextField TfNomM;
-	private JTextField TfNDepM;
-	private JTextField TfNumEmps;
-	private JTextField TfMidSal;
-	private JTextField TfMaxSal;
-	private JTextField TfMinSal;
-	private JTextField TfNumDeps;
-	private JTextField TfMaxEmps;
-	private JTextField TfMinEmps;
+	private static JTextField TfNDepI;
+	private static JTextField TfNomI;
+	private static JTextField TfLocI;
+	private static JTextField TfLocM;
+	private static JTextField TfNomM;
+	private static JTextField TfNDepM;
+	private static JTextField TfNumEmps;
+	private static JTextField TfMidSal;
+	private static JTextField TfMaxSal;
+	private static JTextField TfMinSal;
+	private static JTextField TfNumDeps;
+	private static JTextField TfMaxEmps;
+	private static JTextField TfMinEmps;
+	private static JLabel lblMens1, lblMens2, lblMens3, lblMens4;
 	
 	/**
 	 * Launch the application.
@@ -100,7 +107,7 @@ public class VentanaPrincipal {
 	
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 630, 400);
+		frame.setBounds(100, 100, 630, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -232,35 +239,27 @@ public class VentanaPrincipal {
 			public void stateChanged(ChangeEvent e) {
 			
 				if (tabbedPane.getSelectedIndex() == 1){
-					/*System.out.println("Pestaña Modificar Empleados");
-					Departamentos[] D = Metodos.listarDep();
-					for (int i = 0; i <= D.length - 1; i++){
-						CBDepM.addItem((D[i].getDeptNo()));
-						System.out.println(D[i].getDnombre());
-					}
+					LimpiarEmp(1);	
 					
-					Empleados[] directores = Metodos.listarEmp(1);
-					for (int i = 0; i <= directores.length - 1; i++){
-						CBDirM.addItem(directores[i].getEmpNo());
-						System.out.println(directores[i].getEmpNo());
-					}*/
 					List depart = MetodosDep.listarDep();
 					for (int i = 0; i <= depart.size() - 1; i++){
 						CBDepM.addItem((((Departamentos) depart.get(i)).getDeptNo()));
-						System.out.println(((Departamentos) depart.get(i)).getDnombre());
+						//System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
 					List directores = MetodosEmp.listarEmp(1);
 					for (int i = 0; i <= directores.size() - 1; i++){
 						CBDirM.addItem(((Empleados) directores.get(i)).getEmpNo());
-						System.out.println(((Empleados) directores.get(i)).getEmpNo());
+						//System.out.println(((Empleados) directores.get(i)).getEmpNo());
 					}
 				}
 				else if (tabbedPane.getSelectedIndex() == 2){
 					System.out.println("Pestaña Insertar Departamentos");
+					LimpiarDep(2);
 				}
 				else if (tabbedPane.getSelectedIndex() == 3){
 					System.out.println("Pestaña Modificar Departamentos");
+					LimpiarDep(1);
 				}
 				else if (tabbedPane.getSelectedIndex() == 4){
 					System.out.println("Pestaña Estadisticas");
@@ -280,24 +279,25 @@ public class VentanaPrincipal {
 				
 				if (tabbedPane.getSelectedIndex() == 0){
 					System.out.println("Pestaña Insertar Empleados");
-					//Departamentos[] D = Metodos.listarDep();
+					LimpiarEmp(2);
+					
 					List<?> depart = MetodosDep.listarDep();
 					for (int i = 0; i <= depart.size() - 1; i++){
 						CBDepI.addItem((((Departamentos) depart.get(i)).getDeptNo()));
-						System.out.println(((Departamentos) depart.get(i)).getDnombre());
+						//System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
 					List<?> directores = MetodosEmp.listarEmp(1);
 					for (int i = 0; i <= directores.size() - 1; i++){
 						CBDirI.addItem(((Empleados) directores.get(i)).getEmpNo());
-						System.out.println(((Empleados) directores.get(i)).getEmpNo());
+						//System.out.println(((Empleados) directores.get(i)).getEmpNo());
 					}
 				}				
 			}
 		});
 		tabbedPane.setVisible(false);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		tabbedPane.setBounds(0, 27, 614, 334);
+		tabbedPane.setBounds(0, 27, 614, 352);
 		frame.getContentPane().add(tabbedPane);
 		
 		JPanel InsEmp = new JPanel();
@@ -348,7 +348,7 @@ public class VentanaPrincipal {
 						e.consume();
 						TfNEmpI.requestFocus();		
 						TfNEmpI.setText("");
-						JOptionPane.showMessageDialog(null, "Solo puede contener números"); 
+						lblMens1.setText("Solo puede contener números"); 
 				}
 				
 			}
@@ -367,7 +367,7 @@ public class VentanaPrincipal {
 					e.consume();
 					TfComI.requestFocus();		
 					TfComI.setText("");
-					JOptionPane.showMessageDialog(null, "Solo puede contener números"); 
+					lblMens1.setText("Solo puede contener números"); 
 			}
 				
 			}
@@ -385,7 +385,7 @@ public class VentanaPrincipal {
 						e.consume();
 						TfApeI.requestFocus();		
 						TfApeI.setText("");
-						JOptionPane.showMessageDialog(null, "No puede contener números"); 
+						lblMens1.setText("No puede contener números"); 
 						
 					}
 				}
@@ -404,7 +404,7 @@ public class VentanaPrincipal {
 					e.consume();
 					TfOfiI.requestFocus();		
 					TfOfiI.setText("");
-					JOptionPane.showMessageDialog(null, "No puede contener números"); 
+					lblMens1.setText("No puede contener números"); 
 			}
 			}
 		});
@@ -422,7 +422,7 @@ public class VentanaPrincipal {
 					e.consume();
 					TfSalI.requestFocus();		
 					TfSalI.setText("");
-					JOptionPane.showMessageDialog(null, "Solo puede contener números"); 
+					lblMens1.setText("Solo puede contener números"); 
 			}
 				
 			}
@@ -446,18 +446,23 @@ public class VentanaPrincipal {
 				if(TfNEmpI.getText().equals("") || TfApeI.getText().equals("") || TfOfiI.getText().equals("") || TfSalI.getText().equals("") ||
 				TfComI.getText().equals("")){
 					
-					JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
+					lblMens1.setText("Debe rellenar todos los campos");
 					
 				} else{
 					
 						dep = MetodosDep.ConsultarDep((byte) CBDepI.getSelectedItem());
 						MetodosEmp.InsertarEmp(Short.parseShort(TfNEmpI.getText()), TfApeI.getText(), TfOfiI.getText(), Float.parseFloat(TfSalI.getText()), 
-							Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem());							
+							Float.parseFloat(TfComI.getText()), dep, (short) CBDirI.getSelectedItem(), lblMens1);								
 				}
 			}
 		});
 		btnInsertarEmpleado.setBounds(225, 188, 150, 50);
 		InsEmp.add(btnInsertarEmpleado);
+		
+		lblMens1 = new JLabel("");
+		lblMens1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMens1.setBounds(60, 266, 491, 14);
+		InsEmp.add(lblMens1);
 		
 		JPanel ModEmp = new JPanel();
 		tabbedPane.addTab("Modificar Empleado", null, ModEmp, null);
@@ -545,7 +550,10 @@ public class VentanaPrincipal {
 					i = empleados.indexOf(emp);
 					System.out.println(i);
 									
-				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
+				} else { 
+					lblMens2.setText("El empleado no existe");
+					LimpiarDep(1);
+				}		
 				
 			}
 		});
@@ -557,11 +565,13 @@ public class VentanaPrincipal {
 			public void actionPerformed(ActionEvent e) {
 				if(TfNEmpM.getText().equals("") || TfApeM.getText().equals("") || TfOfiM.getText().equals("") || TfSalM.getText().equals("") ||
 						TfComM.getText().equals("")){
-							JOptionPane.showMessageDialog(null, "Debe rellenar todos los campos");
+							lblMens2.setText("Debe rellenar todos los campos");
 						} else{
 				dep = MetodosDep.ConsultarDep((byte) CBDepM.getSelectedItem());
 				MetodosEmp.ModificarEmp(Short.parseShort(TfNEmpM.getText()), TfApeM.getText(), TfOfiM.getText(), Float.parseFloat(TfSalM.getText()), 
-						Float.parseFloat(TfComM.getText()), dep, (short) CBDirM.getSelectedItem());
+						Float.parseFloat(TfComM.getText()), dep, (short) CBDirM.getSelectedItem(), lblMens2);
+				//LimpiarDep(2);
+				//lblMens2.setText("El empleado ha sido modificado");
 			}
 			}
 		});
@@ -571,7 +581,8 @@ public class VentanaPrincipal {
 		JButton btnEliminar = new JButton("Eliminar");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MetodosEmp.EliminarEmp(Short.parseShort(TfNEmpM.getText()));		
+				MetodosEmp.EliminarEmp(Short.parseShort(TfNEmpM.getText()), lblMens2);	
+				
 			}
 		});
 		btnEliminar.setBounds(422, 182, 150, 50);
@@ -600,8 +611,12 @@ public class VentanaPrincipal {
 				
 				List<Empleados> empleados = MetodosEmp.listarEmp(2);
 				i++;
-				emp = empleados.get(i);
-				ImprimirEmp(emp);
+				if (i == empleados.size()){
+					lblMens2.setText("Este es el primero empleado, no puedes retroceder mas");
+				} else{
+					emp = empleados.get(i);				
+					ImprimirEmp(emp);
+				}
 				
 			}
 		});
@@ -614,8 +629,13 @@ public class VentanaPrincipal {
 				
 				List<Empleados> empleados = MetodosEmp.listarEmp(2);
 				i--;
-				emp = empleados.get(i);				
-				ImprimirEmp(emp);
+				if (i < 0){
+					lblMens2.setText("Este es el primer empleado, no puedes retroceder mas");
+				} else{
+					emp = empleados.get(i);				
+					ImprimirEmp(emp);
+				}
+				
 				
 			}
 		});
@@ -637,6 +657,11 @@ public class VentanaPrincipal {
 		});
 		btnUltimoRegistros.setBounds(462, 257, 110, 23);
 		ModEmp.add(btnUltimoRegistros);
+		
+		lblMens2 = new JLabel("");
+		lblMens2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMens2.setBounds(61, 291, 491, 14);
+		ModEmp.add(lblMens2);
 		
 		JPanel InsDep = new JPanel();
 		tabbedPane.addTab("Insertar Departamento", null, InsDep, null);
@@ -676,12 +701,22 @@ public class VentanaPrincipal {
 		btnInsertarDepartamento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				MetodosDep.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText());
-				
+				if (TfNDepI.getText().equals("") || TfNomI.getText().equals("") || TfLocI.getText().equals("")){
+					lblMens3.setText("Debe rellenar todos los campos");
+				} else{
+					MetodosDep.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText());
+					LimpiarDep(1);
+					lblMens3.setText("Departamento insertado");
+				}				
 			}
 		});
-		btnInsertarDepartamento.setBounds(212, 167, 150, 50);
+		btnInsertarDepartamento.setBounds(230, 167, 150, 50);
 		InsDep.add(btnInsertarDepartamento);
+		
+		lblMens3 = new JLabel("");
+		lblMens3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMens3.setBounds(60, 259, 491, 14);
+		InsDep.add(lblMens3);
 		
 		JPanel ModDep = new JPanel();
 		tabbedPane.addTab("Modificar Departamento", null, ModDep, null);
@@ -700,7 +735,10 @@ public class VentanaPrincipal {
 					i = departamentos.indexOf(dep);
 					System.out.println(i);
 									
-				} else { JOptionPane.showMessageDialog(null, "El empleado no existe"); }		
+				} else { 
+					LimpiarDep(1);
+					lblMens4.setText("El departamento no existe"); 
+					}		
 				
 				
 			}
@@ -712,8 +750,13 @@ public class VentanaPrincipal {
 		ModificarDep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				if (TfNDepI.getText().equals("") || TfNomI.getText().equals("") || TfLocI.getText().equals("")){
+					lblMens4.setText("Debe rellenar todos los campos");
+				} else{
 				MetodosDep.ModificarDep(Byte.parseByte(TfNDepI.getText()),TfNomI.getText(), TfLocI.getText());
-				
+				LimpiarDep(1);
+				lblMens4.setText("Departamento modificado");
+				}
 			}
 		});
 		ModificarDep.setBounds(232, 158, 150, 50);
@@ -723,7 +766,13 @@ public class VentanaPrincipal {
 		EliminarDep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				if(TfNDepM.getText().equals("")){
+					lblMens4.setText("Debe rellenar el numero de departamento");
+				} else{
+					MetodosDep.EliminarDep(Byte.parseByte(TfNDepM.getText()));
+					LimpiarDep(1);
+					lblMens4.setText("Empleado eliminado");
+				}
 				
 			}
 		});
@@ -808,6 +857,11 @@ public class VentanaPrincipal {
 		TfNDepM.setColumns(10);
 		TfNDepM.setBounds(330, 31, 86, 20);
 		ModDep.add(TfNDepM);
+
+		lblMens4 = new JLabel("");
+		lblMens4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMens4.setBounds(60, 287, 491, 14);
+		ModDep.add(lblMens4);
 		
 		JPanel Estadisticas = new JPanel();
 		tabbedPane.addTab("Estadisticas", null, Estadisticas, null);
@@ -891,7 +945,8 @@ public class VentanaPrincipal {
 		frame.getContentPane().add(lblPracticaDeHibernate);
 		
 		JLabel lblJorgeRealLozano = new JLabel("Jorge Real Lozano");
-		lblJorgeRealLozano.setBounds(250, 300, 131, 14);
+		lblJorgeRealLozano.setHorizontalAlignment(SwingConstants.CENTER);
+		lblJorgeRealLozano.setBounds(240, 390, 131, 14);
 		frame.getContentPane().add(lblJorgeRealLozano);
 		
 		
@@ -910,10 +965,45 @@ public class VentanaPrincipal {
 		CBDirM.setSelectedItem(emp.getDir());		
 	}
 	
+public static void LimpiarEmp(int op){
+		switch(op){
+		case 1:
+			TfNEmpM.setText("");
+			TfApeM.setText("");
+			TfOfiM.setText("");
+			TfSalM.setText("");
+			TfComM.setText("");
+			break;
+		case 2:
+			TfNEmpI.setText("");
+			TfApeI.setText("");
+			TfOfiI.setText("");
+			TfSalI.setText("");
+			TfComI.setText("");
+			break;
+		}
+		
+	}
+	
 	public void ImprimirDep(Departamentos dep){
 		
 		TfNDepM.setText(String.valueOf(dep.getDeptNo()));
 		TfNomM.setText(dep.getDnombre());
 		TfLocM.setText(dep.getLoc());
+	}
+	
+	public static void LimpiarDep(int op){
+		switch(op){
+		case 1:
+			TfNDepM.setText("");
+			TfNomM.setText("");
+			TfLocM.setText("");
+			break;
+		case 2:
+			TfNDepI.setText("");
+			TfNomI.setText("");
+			TfLocI.setText("");
+			break;
+		}
 	}
 }

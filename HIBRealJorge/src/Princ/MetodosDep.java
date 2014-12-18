@@ -2,6 +2,7 @@ package Princ;
 
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import org.hibernate.Query;
@@ -41,7 +42,7 @@ public class MetodosDep {
 		return dep;
 	}
 	
-	public static void InsertarDep(byte nDep, String nombre, String localidad){
+	public static void InsertarDep(byte nDep, String nombre, String localidad, JLabel lbl){
 		
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();		
 		Session session = sesion.openSession();
@@ -57,12 +58,13 @@ public class MetodosDep {
 			session.save(dep);
 			tx.commit();
 		} else {
-			JOptionPane.showMessageDialog(null, "El departamento ya existe");
+			VentanaPrincipal.LimpiarDep(2);
+			lbl.setText("El departamento ya existe");
 		}
 		
 	}
 	
-	public static void ModificarDep(byte nDep, String nombre, String localidad){
+	public static void ModificarDep(byte nDep, String nombre, String localidad, JLabel lbl){
 		
 		SessionFactory sesion = SessionFactoryUtil.getSessionFactory();
 		Session session = sesion.openSession();
@@ -73,7 +75,13 @@ public class MetodosDep {
 			dep.setDeptNo(nDep);
 			dep.setDnombre(nombre);
 			dep.setLoc(localidad);
-		} else { JOptionPane.showMessageDialog(null, "El departamento no existe"); }		
+			VentanaPrincipal.LimpiarDep(1);
+			lbl.setText("Departamento modificado");
+			
+			
+		} else { 
+			VentanaPrincipal.LimpiarDep(1);
+			lbl.setText("El departamento no existe"); }		
 	}
 	
 	public static void EliminarDep(byte nDep){

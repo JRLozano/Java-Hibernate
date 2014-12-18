@@ -38,6 +38,12 @@ public class Empleados implements java.io.Serializable {
 		this.salario = salario;
 		this.comision = comision;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Empleados emp = (Empleados) obj;
+		return empNo == emp.empNo;
+	};
 
 	public short getEmpNo() {
 		return this.empNo;
