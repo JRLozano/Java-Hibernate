@@ -1,6 +1,6 @@
 package primero;
 
-// Generated 16-dic-2014 9:02:03 by Hibernate Tools 3.4.0.CR1
+// Generated 18-dic-2014 10:19:26 by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,13 +30,6 @@ public class Departamentos implements java.io.Serializable {
 		this.empleadoses = empleadoses;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		Departamentos dep = (Departamentos) obj;
-		return (deptNo == dep.deptNo);
-	};
-	
-	
 	public byte getDeptNo() {
 		return this.deptNo;
 	}

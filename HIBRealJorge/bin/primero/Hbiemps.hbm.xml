@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 18-dic-2014 10:19:28 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="primero.Hbiemps" table="hbiemps" catalog="ejemplo">
+        <composite-id name="id" class="primero.HbiempsId">
+            <key-property name="dep" type="string">
+                <column name="Dep" length="15" />
+            </key-property>
+            <key-property name="emps" type="long">
+                <column name="Emps" />
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>

@@ -13,5 +13,6 @@
         <property name="hibernate.search.autoregister_listeners">false</property>
         <mapping resource="primero/Empleados.hbm.xml" />
         <mapping resource="primero/Departamentos.hbm.xml" />
+        <mapping resource="primero/Hbiemps.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

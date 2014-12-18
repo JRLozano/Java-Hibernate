@@ -28,6 +28,8 @@ import javax.swing.event.ChangeListener;
 
 import primero.Departamentos;
 import primero.Empleados;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class VentanaPrincipal {	
@@ -61,6 +63,13 @@ public class VentanaPrincipal {
 	private JTextField TfLocM;
 	private JTextField TfNomM;
 	private JTextField TfNDepM;
+	private JTextField TfNumEmps;
+	private JTextField TfMidSal;
+	private JTextField TfMaxSal;
+	private JTextField TfMinSal;
+	private JTextField TfNumDeps;
+	private JTextField TfMaxEmps;
+	private JTextField TfMinEmps;
 	
 	/**
 	 * Launch the application.
@@ -192,6 +201,11 @@ public class VentanaPrincipal {
 		menuBar.add(mnVarios);
 		
 		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		mnVarios.add(mntmSalir);
 		
 		JSeparator separator_2 = new JSeparator();
@@ -250,6 +264,14 @@ public class VentanaPrincipal {
 				}
 				else if (tabbedPane.getSelectedIndex() == 4){
 					System.out.println("Pestaña Estadisticas");
+					
+					TfNumEmps.setText(String.valueOf(Estadisticas.NumEmps()));
+					TfMidSal.setText(String.valueOf(Estadisticas.MidSalar()));
+					TfMaxSal.setText(Estadisticas.MaxSalar());
+					TfMinSal.setText(Estadisticas.MinSalar());
+					TfNumDeps.setText(String.valueOf(Estadisticas.NumDeps()));
+					TfMaxEmps.setText(Estadisticas.MaxEmps());
+					TfMinEmps.setText(Estadisticas.MinEmps());
 				}		
 			}
 		});
@@ -318,26 +340,93 @@ public class VentanaPrincipal {
 		InsEmp.add(lblDirector);
 		
 		TfNEmpI = new JTextField();
+		TfNEmpI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+					String s1 = String.valueOf(e.getKeyChar());
+					if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+						e.consume();
+						TfNEmpI.requestFocus();		
+						TfNEmpI.setText("");
+						JOptionPane.showMessageDialog(null, "Solo puede contener números"); 
+				}
+				
+			}
+		});
 		TfNEmpI.setBounds(170, 34, 86, 20);
 		InsEmp.add(TfNEmpI);
 		TfNEmpI.setColumns(10);
 		
 		TfComI = new JTextField();
+		TfComI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+					e.consume();
+					TfComI.requestFocus();		
+					TfComI.setText("");
+					JOptionPane.showMessageDialog(null, "Solo puede contener números"); 
+			}
+				
+			}
+		});
 		TfComI.setColumns(10);
 		TfComI.setBounds(170, 132, 86, 20);
 		InsEmp.add(TfComI);
 		
 		TfApeI = new JTextField();
+		TfApeI.addKeyListener(new KeyAdapter() {
+			
+				public void keyTyped(KeyEvent e) {
+					String s1 = String.valueOf(e.getKeyChar());
+					if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+						e.consume();
+						TfApeI.requestFocus();		
+						TfApeI.setText("");
+						JOptionPane.showMessageDialog(null, "No puede contener números"); 
+						
+					}
+				}
+			
+		});
 		TfApeI.setColumns(10);
 		TfApeI.setBounds(170, 57, 86, 20);
 		InsEmp.add(TfApeI);
 		
 		TfOfiI = new JTextField();
+		TfOfiI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					TfOfiI.requestFocus();		
+					TfOfiI.setText("");
+					JOptionPane.showMessageDialog(null, "No puede contener números"); 
+			}
+			}
+		});
 		TfOfiI.setColumns(10);
 		TfOfiI.setBounds(170, 82, 86, 20);
 		InsEmp.add(TfOfiI);
 		
 		TfSalI = new JTextField();
+		TfSalI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[0-9]")) &&!(s1.matches(".")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+					e.consume();
+					TfSalI.requestFocus();		
+					TfSalI.setText("");
+					JOptionPane.showMessageDialog(null, "Solo puede contener números"); 
+			}
+				
+			}
+		});
 		TfSalI.setColumns(10);
 		TfSalI.setBounds(170, 107, 86, 20);
 		InsEmp.add(TfSalI);
@@ -724,6 +813,76 @@ public class VentanaPrincipal {
 		tabbedPane.addTab("Estadisticas", null, Estadisticas, null);
 		Estadisticas.setLayout(null);
 		
+		JLabel lblNumeroDeEmpleados = new JLabel("Numero de Empleados");
+		lblNumeroDeEmpleados.setBounds(34, 32, 106, 14);
+		Estadisticas.add(lblNumeroDeEmpleados);
+		
+		TfNumEmps = new JTextField();
+		TfNumEmps.setEditable(false);
+		TfNumEmps.setBounds(182, 29, 86, 20);
+		Estadisticas.add(TfNumEmps);
+		TfNumEmps.setColumns(10);
+		
+		JLabel lblSalarioMedio = new JLabel("Salario Medio");
+		lblSalarioMedio.setBounds(317, 32, 86, 14);
+		Estadisticas.add(lblSalarioMedio);
+		
+		TfMidSal = new JTextField();
+		TfMidSal.setEditable(false);
+		TfMidSal.setBounds(428, 29, 86, 20);
+		Estadisticas.add(TfMidSal);
+		TfMidSal.setColumns(10);
+		
+		JLabel lblApellidoDelEmpleados = new JLabel("Apellido del empleado con salario maximo y salario maximo");
+		lblApellidoDelEmpleados.setBounds(34, 57, 283, 14);
+		Estadisticas.add(lblApellidoDelEmpleados);
+		
+		TfMaxSal = new JTextField();
+		TfMaxSal.setEditable(false);
+		TfMaxSal.setBounds(34, 82, 480, 20);
+		Estadisticas.add(TfMaxSal);
+		TfMaxSal.setColumns(10);
+		
+		JLabel lblApellidoDelEmpleados_1 = new JLabel("Apellido del empleado con salario minimo y salario minimo");
+		lblApellidoDelEmpleados_1.setBounds(34, 113, 275, 14);
+		Estadisticas.add(lblApellidoDelEmpleados_1);
+		
+		TfMinSal = new JTextField();
+		TfMinSal.setEditable(false);
+		TfMinSal.setBounds(34, 138, 480, 20);
+		Estadisticas.add(TfMinSal);
+		TfMinSal.setColumns(10);
+		
+		JLabel lblNumeroDeDepartamentos = new JLabel("Numero de departamentos");
+		lblNumeroDeDepartamentos.setBounds(34, 172, 128, 14);
+		Estadisticas.add(lblNumeroDeDepartamentos);
+		
+		TfNumDeps = new JTextField();
+		TfNumDeps.setEditable(false);
+		TfNumDeps.setBounds(182, 169, 86, 20);
+		Estadisticas.add(TfNumDeps);
+		TfNumDeps.setColumns(10);
+		
+		JLabel lblNombreDeDepartamento = new JLabel("Nombre de departamento con mas empleados y numero de empleados");
+		lblNombreDeDepartamento.setBounds(38, 197, 476, 14);
+		Estadisticas.add(lblNombreDeDepartamento);
+		
+		TfMaxEmps = new JTextField();
+		TfMaxEmps.setEditable(false);
+		TfMaxEmps.setBounds(34, 222, 480, 20);
+		Estadisticas.add(TfMaxEmps);
+		TfMaxEmps.setColumns(10);
+		
+		JLabel lblNombreDeDepartamento_1 = new JLabel("Nombre de departamento con menos empleados y numero de empleados");
+		lblNombreDeDepartamento_1.setBounds(34, 252, 348, 14);
+		Estadisticas.add(lblNombreDeDepartamento_1);
+		
+		TfMinEmps = new JTextField();
+		TfMinEmps.setEditable(false);
+		TfMinEmps.setBounds(34, 275, 480, 20);
+		Estadisticas.add(TfMinEmps);
+		TfMinEmps.setColumns(10);
+		
 		JLabel lblPracticaDeHibernate = new JLabel("Practica de Hibernate");
 		lblPracticaDeHibernate.setFont(new Font("Tahoma", Font.BOLD, 25));
 		lblPracticaDeHibernate.setHorizontalAlignment(SwingConstants.CENTER);
@@ -757,6 +916,4 @@ public class VentanaPrincipal {
 		TfNomM.setText(dep.getDnombre());
 		TfLocM.setText(dep.getLoc());
 	}
-	
-	
 }
