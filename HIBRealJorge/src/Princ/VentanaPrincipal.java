@@ -5,9 +5,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -28,14 +28,8 @@ import javax.swing.event.ChangeListener;
 
 import primero.Departamentos;
 import primero.Empleados;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.AncestorEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 
 public class VentanaPrincipal {	
@@ -53,10 +47,10 @@ public class VentanaPrincipal {
 	private static JTextField TfOfiM;
 	private static JTextField TfApeM;
 	private static JTextField TfNEmpM;
-	private JComboBox CBDepI;
-	private JComboBox CBDirI;
-	private JComboBox CBDepM;
-	private JComboBox CBDirM;	
+	private static JComboBox CBDepI;
+	private static JComboBox CBDirI;
+	private static JComboBox CBDepM;
+	private static JComboBox CBDirM;	
 	private int i;
 	private List departamentos = MetodosDep.listarDep();
 	//Empleados[] empleados = Metodos.listarEmp(2);
@@ -90,6 +84,9 @@ public class VentanaPrincipal {
 				try {
 					VentanaPrincipal window = new VentanaPrincipal();
 					window.frame.setVisible(true);
+					
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -237,32 +234,33 @@ public class VentanaPrincipal {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-			
-				if (tabbedPane.getSelectedIndex() == 1){
-					LimpiarEmp(1);	
+				switch(tabbedPane.getSelectedIndex()){
+				case 1:
+					//System.out.println("Pestaña Modificar Empleados");
+					LimpiarEmp(1);
+					CBDepM.removeAllItems();
+					CBDirM.removeAllItems();
 					
 					List depart = MetodosDep.listarDep();
 					for (int i = 0; i <= depart.size() - 1; i++){
 						CBDepM.addItem((((Departamentos) depart.get(i)).getDeptNo()));
-						//System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
 					List directores = MetodosEmp.listarEmp(1);
 					for (int i = 0; i <= directores.size() - 1; i++){
 						CBDirM.addItem(((Empleados) directores.get(i)).getEmpNo());
-						//System.out.println(((Empleados) directores.get(i)).getEmpNo());
 					}
-				}
-				else if (tabbedPane.getSelectedIndex() == 2){
-					System.out.println("Pestaña Insertar Departamentos");
+					break;
+				case 2:
+					//System.out.println("Pestaña Insertar Departamentos");
 					LimpiarDep(2);
-				}
-				else if (tabbedPane.getSelectedIndex() == 3){
-					System.out.println("Pestaña Modificar Departamentos");
+					break;
+				case 3:
+					//System.out.println("Pestaña Modificar Departamentos");
 					LimpiarDep(1);
-				}
-				else if (tabbedPane.getSelectedIndex() == 4){
-					System.out.println("Pestaña Estadisticas");
+					break;
+				case 4:
+					//System.out.println("Pestaña Estadisticas");
 					
 					TfNumEmps.setText(String.valueOf(Estadisticas.NumEmps()));
 					TfMidSal.setText(String.valueOf(Estadisticas.MidSalar()));
@@ -271,28 +269,27 @@ public class VentanaPrincipal {
 					TfNumDeps.setText(String.valueOf(Estadisticas.NumDeps()));
 					TfMaxEmps.setText(Estadisticas.MaxEmps());
 					TfMinEmps.setText(Estadisticas.MinEmps());
-				}		
+					break;
+				}
 			}
 		});
 		tabbedPane.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {	
 				
 				if (tabbedPane.getSelectedIndex() == 0){
-					System.out.println("Pestaña Insertar Empleados");
+					//System.out.println("Pestaña Insertar Empleados");
 					LimpiarEmp(2);
-					
-					List<?> depart = MetodosDep.listarDep();
+					List depart = MetodosDep.listarDep();
 					for (int i = 0; i <= depart.size() - 1; i++){
 						CBDepI.addItem((((Departamentos) depart.get(i)).getDeptNo()));
-						//System.out.println(((Departamentos) depart.get(i)).getDnombre());
 					}
 					
-					List<?> directores = MetodosEmp.listarEmp(1);
+					List directores = MetodosEmp.listarEmp(1);
 					for (int i = 0; i <= directores.size() - 1; i++){
 						CBDirI.addItem(((Empleados) directores.get(i)).getEmpNo());
-						//System.out.println(((Empleados) directores.get(i)).getEmpNo());
 					}
-				}				
+					
+					}				
 			}
 		});
 		tabbedPane.setVisible(false);
@@ -340,35 +337,65 @@ public class VentanaPrincipal {
 		InsEmp.add(lblDirector);
 		
 		TfNEmpI = new JTextField();
+		TfNEmpI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				/*if(Integer.parseInt(TfNEmpI.getText()) > 32767){
+					TfNEmpI.setText("");
+					TfNEmpI.requestFocus();
+					lblMens1.setText("El numero de empleado debe estar comprendido entre 0 y 32767");
+				}*/
+				if(TfNEmpI.getText().length() > 4){
+					TfNEmpI.setText("");
+					//TfNEmpI.requestFocus();
+					lblMens1.setText("El numero de empleado debe estar comprendido entre 0 y 9999");
+				}
+			}
+		});
 		TfNEmpI.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 					String s1 = String.valueOf(e.getKeyChar());
 					if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
 						e.consume();
-						TfNEmpI.requestFocus();		
+						//TfNEmpI.requestFocus();		
 						TfNEmpI.setText("");
 						lblMens1.setText("Solo puede contener números"); 
-				}
-				
+					}			
 			}
 		});
 		TfNEmpI.setBounds(170, 34, 86, 20);
 		InsEmp.add(TfNEmpI);
 		TfNEmpI.setColumns(10);
 		
+		
 		TfComI = new JTextField();
+		TfComI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				try{
+					if (Double.parseDouble(TfComI.getText()) <= 0 || Double.parseDouble(TfComI.getText()) > 9999.99){
+						lblMens1.setText("La comision debe estar entre los rangos permitidos(1 - 9999.99)");
+						//TfComI.requestFocus();
+						TfComI.setText("");
+					}
+				} catch (NumberFormatException nfe){
+					TfComI.setText("");
+					lblMens1.setText("Solo puede contener numeros");
+				}	
+					
+			}
+		});
 		TfComI.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent e) {
-				
+			public void keyTyped(KeyEvent e) {				
 				String s1 = String.valueOf(e.getKeyChar());
-				if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+				if(!(s1.matches("[0-9]")) && !(s1.matches(".")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
 					e.consume();
-					TfComI.requestFocus();		
+					//TfComI.requestFocus();		
 					TfComI.setText("");
 					lblMens1.setText("Solo puede contener números"); 
-			}
+				}
 				
 			}
 		});
@@ -377,16 +404,24 @@ public class VentanaPrincipal {
 		InsEmp.add(TfComI);
 		
 		TfApeI = new JTextField();
-		TfApeI.addKeyListener(new KeyAdapter() {
-			
+		TfApeI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {				
+					if(TfApeI.getText().length() > 10){
+						TfApeI.setText("");
+						TfApeI.requestFocus();
+						lblMens1.setText("El apellido debe tener 10 caracteres como mucho");
+					}							
+			}
+		});
+		TfApeI.addKeyListener(new KeyAdapter() {			
 				public void keyTyped(KeyEvent e) {
 					String s1 = String.valueOf(e.getKeyChar());
 					if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
 						e.consume();
-						TfApeI.requestFocus();		
+						//TfApeI.requestFocus();		
 						TfApeI.setText("");
-						lblMens1.setText("No puede contener números"); 
-						
+						lblMens1.setText("No puede contener números"); 						
 					}
 				}
 			
@@ -396,13 +431,23 @@ public class VentanaPrincipal {
 		InsEmp.add(TfApeI);
 		
 		TfOfiI = new JTextField();
+		TfOfiI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfOfiI.getText().length() > 10){
+					TfOfiI.setText("");
+					//TfOfiI.requestFocus();
+					lblMens1.setText("El oficio debe tener 10 caracteres como mucho");
+				}
+			}
+		});
 		TfOfiI.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				String s1 = String.valueOf(e.getKeyChar());
 				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
 					e.consume();
-					TfOfiI.requestFocus();		
+					//TfOfiI.requestFocus();		
 					TfOfiI.setText("");
 					lblMens1.setText("No puede contener números"); 
 			}
@@ -413,18 +458,31 @@ public class VentanaPrincipal {
 		InsEmp.add(TfOfiI);
 		
 		TfSalI = new JTextField();
+		TfSalI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				try{
+					if (Double.parseDouble(TfSalI.getText()) <= 0 || Double.parseDouble(TfSalI.getText()) > 9999.99){
+						lblMens1.setText("El salario debe estar entre los rangos permitidos(1 - 9999.99)");
+						//TfSalI.requestFocus();
+						TfSalI.setText("");
+					}	
+				} catch (NumberFormatException nfe){ 
+					lblMens1.setText("Solo puede contener números"); 
+					TfSalI.setText(""); 
+					}
+			}
+		});
 		TfSalI.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent e) {
-				
+			public void keyTyped(KeyEvent e) {				
 				String s1 = String.valueOf(e.getKeyChar());
 				if(!(s1.matches("[0-9]")) &&!(s1.matches(".")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
 					e.consume();
-					TfSalI.requestFocus();		
+					//TfSalI.requestFocus();		
 					TfSalI.setText("");
 					lblMens1.setText("Solo puede contener números"); 
-			}
-				
+				}			
 			}
 		});
 		TfSalI.setColumns(10);
@@ -494,27 +552,152 @@ public class VentanaPrincipal {
 		ModEmp.add(label_4);
 		
 		TfComM = new JTextField();
+		TfComM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[0-9]")) &&!(s1.matches(".")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+					e.consume();
+					//TfSalI.requestFocus();		
+					TfComM.setText("");
+					lblMens2.setText("Solo puede contener números"); 
+				}	
+			}
+		});
+		TfComM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				try{
+					if (Double.parseDouble(TfComM.getText()) <= 0 || Double.parseDouble(TfComM.getText()) > 9999.99){
+						lblMens2.setText("La comision debe estar entre los rangos permitidos(1 - 9999.99)");
+						//TfSalI.requestFocus();
+						TfComM.setText("");
+					}	
+				} catch (NumberFormatException nfe){
+					TfComM.setText("");
+					lblMens2.setText("Solo puede contener numeros");					
+				}
+			}
+		});
 		TfComM.setColumns(10);
 		TfComM.setBounds(168, 126, 86, 20);
 		ModEmp.add(TfComM);
 		
 		TfSalM = new JTextField();
+		TfSalM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				try{
+					if (Double.parseDouble(TfSalM.getText()) <= 0 || Double.parseDouble(TfSalM.getText()) > 9999.99){
+						lblMens2.setText("El salario debe estar entre los rangos permitidos(1 - 9999.99)");
+						//TfSalI.requestFocus();
+						TfSalM.setText("");
+					}	
+				} catch (NumberFormatException nfe){
+					TfSalM.setText("");
+					lblMens2.setText("Solo puede contener numeros");
+				}
+			}
+		});
+		TfSalM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[0-9]")) &&!(s1.matches(".")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+					e.consume();
+					//TfSalI.requestFocus();		
+					TfSalM.setText("");
+					lblMens2.setText("Solo puede contener números"); 
+				}	
+			}
+		});
 		
 		TfSalM.setColumns(10);
 		TfSalM.setBounds(168, 101, 86, 20);
 		ModEmp.add(TfSalM);
 		
 		TfOfiM = new JTextField();
+		TfOfiM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfOfiM.getText().length() > 10){
+					TfOfiM.setText("");
+					TfOfiM.requestFocus();
+					lblMens2.setText("El oficio debe tener 10 caracteres como mucho");
+				}	
+			}
+		});
+		TfOfiM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					//TfOfiI.requestFocus();		
+					TfOfiM.setText("");
+					lblMens2.setText("No puede contener números"); 
+			}
+			}
+		});
 		TfOfiM.setColumns(10);
 		TfOfiM.setBounds(168, 76, 86, 20);
 		ModEmp.add(TfOfiM);
 		
 		TfApeM = new JTextField();
+		TfApeM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfApeM.getText().length() > 10){
+					TfApeM.setText("");
+					TfApeM.requestFocus();
+					lblMens2.setText("El apellido debe tener 10 caracteres como mucho");
+				}	
+			}
+		});
+		TfApeM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					//TfOfiI.requestFocus();		
+					TfApeM.setText("");
+					lblMens2.setText("No puede contener números"); 
+			}
+			}
+		});
 		TfApeM.setColumns(10);
 		TfApeM.setBounds(168, 51, 86, 20);
 		ModEmp.add(TfApeM);
 		
 		TfNEmpM = new JTextField();
+		TfNEmpM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				/*if(Integer.parseInt(TfNEmpI.getText()) > 32767){
+				TfNEmpI.setText("");
+				TfNEmpI.requestFocus();
+				lblMens1.setText("El numero de empleado debe estar comprendido entre 0 y 32767");
+			}*/
+			if(TfNEmpM.getText().length() > 4){
+				TfNEmpM.setText("");
+				//TfNEmpI.requestFocus();
+				lblMens2.setText("El numero de empleado debe estar comprendido entre 0 y 9999");
+			}
+			}
+		});
+		TfNEmpM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+					String s1 = String.valueOf(e.getKeyChar());
+					if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+						e.consume();
+						//TfNEmpI.requestFocus();		
+						TfNEmpM.setText("");
+						lblMens2.setText("Solo puede contener números"); 
+					}			
+			}
+		});
 		TfNEmpM.setColumns(10);
 		TfNEmpM.setBounds(168, 28, 86, 20);
 		ModEmp.add(TfNEmpM);
@@ -608,14 +791,16 @@ public class VentanaPrincipal {
 		btnSiguienteRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				
-				List<Empleados> empleados = MetodosEmp.listarEmp(2);
-				i++;
-				if (i == empleados.size()){
-					lblMens2.setText("Este es el primero empleado, no puedes retroceder mas");
-				} else{
+				try{
+					
+					List<Empleados> empleados = MetodosEmp.listarEmp(2);
+					i++;
 					emp = empleados.get(i);				
 					ImprimirEmp(emp);
+					
+				} catch (IndexOutOfBoundsException boe) {
+					lblMens2.setText("Este es el ultimo empleado, no puedes avanzar mas");
+					i--;
 				}
 				
 			}
@@ -627,16 +812,15 @@ public class VentanaPrincipal {
 		btnAnteriorRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				List<Empleados> empleados = MetodosEmp.listarEmp(2);
-				i--;
-				if (i < 0){
-					lblMens2.setText("Este es el primer empleado, no puedes retroceder mas");
-				} else{
+				try{
+					List<Empleados> empleados = MetodosEmp.listarEmp(2);
+					i--;
 					emp = empleados.get(i);				
 					ImprimirEmp(emp);
-				}
-				
-				
+				} catch (IndexOutOfBoundsException boe) { 
+					lblMens2.setText("Este es el primer empleado, no puedes retroceder mas");
+					i++;
+					}				
 			}
 		});
 		btnAnteriorRegistro.setBounds(310, 257, 126, 23);
@@ -646,12 +830,14 @@ public class VentanaPrincipal {
 		btnUltimoRegistros.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+			try{	
 				List<Empleados> empleados = MetodosEmp.listarEmp(2);
 				i = empleados.size() - 1;
 				emp = empleados.get(i);
 				ImprimirEmp(emp);
-				
+			} catch (IndexOutOfBoundsException boe) { 
+				lblMens2.setText("Este es el ultimo empleado, no puedes avanzar mas");
+				}
 				
 			}
 		});
@@ -683,16 +869,83 @@ public class VentanaPrincipal {
 		InsDep.add(lblLocalidad);
 		
 		TfNDepI = new JTextField();
+		TfNDepI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfNDepI.getText().length() > 2){
+					TfNDepI.setText("");
+					//TfNEmpI.requestFocus();
+					lblMens3.setText("El numero de departamento debe estar comprendido entre 1 y 99");
+				}
+			}
+		});
+		TfNDepI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+					e.consume();
+					TfNDepI.requestFocus();		
+					TfNDepI.setText("");
+					lblMens3.setText("Solo puede contener números"); 
+				}
+			}
+		});
 		TfNDepI.setColumns(10);
 		TfNDepI.setBounds(319, 41, 86, 20);
 		InsDep.add(TfNDepI);
 		
 		TfNomI = new JTextField();
+		TfNomI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					//TfApeI.requestFocus();		
+					TfNomI.setText("");
+					lblMens3.setText("No puede contener números"); 						
+				}
+			}
+		});
+		TfNomI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {				
+				if(TfNomI.getText().length() > 10){
+					TfNomI.setText("");
+					TfNomI.requestFocus();
+					lblMens3.setText("El nombre debe tener 10 caracteres como mucho");
+				}
+				
+			}
+		});
 		TfNomI.setColumns(10);
 		TfNomI.setBounds(319, 77, 86, 20);
 		InsDep.add(TfNomI);
 		
 		TfLocI = new JTextField();
+		TfLocI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					//TfApeI.requestFocus();		
+					TfLocI.setText("");
+					lblMens3.setText("No puede contener números"); 						
+				}
+			}
+		});
+		TfLocI.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfLocI.getText().length() > 10){
+					TfLocI.setText("");
+					TfLocI.requestFocus();
+					lblMens3.setText("La localidad debe tener 10 caracteres como mucho");
+				}
+			}
+		});
 		TfLocI.setColumns(10);
 		TfLocI.setBounds(319, 118, 86, 20);
 		InsDep.add(TfLocI);
@@ -704,7 +957,7 @@ public class VentanaPrincipal {
 				if (TfNDepI.getText().equals("") || TfNomI.getText().equals("") || TfLocI.getText().equals("")){
 					lblMens3.setText("Debe rellenar todos los campos");
 				} else{
-					MetodosDep.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText());
+					MetodosDep.InsertarDep(Byte.parseByte(TfNDepI.getText()), TfNomI.getText(), TfLocI.getText(), lblMens3);
 					LimpiarDep(1);
 					lblMens3.setText("Departamento insertado");
 				}				
@@ -753,10 +1006,10 @@ public class VentanaPrincipal {
 				if (TfNDepI.getText().equals("") || TfNomI.getText().equals("") || TfLocI.getText().equals("")){
 					lblMens4.setText("Debe rellenar todos los campos");
 				} else{
-				MetodosDep.ModificarDep(Byte.parseByte(TfNDepI.getText()),TfNomI.getText(), TfLocI.getText());
-				LimpiarDep(1);
-				lblMens4.setText("Departamento modificado");
-				}
+					MetodosDep.ModificarDep(Byte.parseByte(TfNDepI.getText()),TfNomI.getText(), TfLocI.getText(), lblMens4);
+					LimpiarDep(1);
+					lblMens4.setText("Departamento modificado");
+				  }
 			}
 		});
 		ModificarDep.setBounds(232, 158, 150, 50);
@@ -782,10 +1035,12 @@ public class VentanaPrincipal {
 		JButton URDep = new JButton("Ultimo Registro");
 		URDep.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				List<Departamentos> departamentos = MetodosDep.listarDep();
-				i = departamentos.size() - 1;
-				dep = departamentos.get(i);
-				ImprimirDep(dep);
+	
+					List<Departamentos> departamentos = MetodosDep.listarDep();
+					i = departamentos.size() - 1;
+					dep = departamentos.get(i);
+					ImprimirDep(dep);		
+				
 			}
 		});
 		URDep.setBounds(466, 233, 110, 23);
@@ -794,10 +1049,16 @@ public class VentanaPrincipal {
 		JButton ARDep = new JButton("Anterior Registro");
 		ARDep.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				List<Departamentos> departamentos = MetodosDep.listarDep();
-				i--;
-				dep = departamentos.get(i);
-				ImprimirDep(dep);
+				try{
+					List<Departamentos> departamentos = MetodosDep.listarDep();
+					i--;
+					dep = departamentos.get(i);
+					ImprimirDep(dep);
+				} catch (IndexOutOfBoundsException boe) { 
+					lblMens4.setText("Este es el primer departamento, no puedes retroceder mas");
+					i++;
+					}
+				
 			}
 		});
 		ARDep.setBounds(314, 233, 126, 23);
@@ -806,10 +1067,16 @@ public class VentanaPrincipal {
 		JButton SRDep = new JButton("Siguiente Registro");
 		SRDep.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+			
+			try{	
 				List<Departamentos> departamentos = MetodosDep.listarDep();
 				i++;
 				dep = departamentos.get(i);
 				ImprimirDep(dep);
+			} catch (IndexOutOfBoundsException boe) { 
+				lblMens4.setText("Este es el ultimo departamento, no puedes avanzar mas");
+				i--;
+				}
 			}
 		});
 		SRDep.setBounds(172, 233, 132, 23);
@@ -844,16 +1111,82 @@ public class VentanaPrincipal {
 		ModDep.add(label_9);
 		
 		TfLocM = new JTextField();
+		TfLocM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfLocM.getText().length() > 10){
+					TfLocM.setText("");
+					TfLocM.requestFocus();
+					lblMens4.setText("La localidad debe tener 10 caracteres como mucho");
+				}
+			}
+		});
+		TfLocM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					//TfApeI.requestFocus();		
+					TfLocM.setText("");
+					lblMens4.setText("No puede contener números"); 						
+				}
+			}
+		});
 		TfLocM.setColumns(10);
 		TfLocM.setBounds(330, 108, 86, 20);
 		ModDep.add(TfLocM);
 		
 		TfNomM = new JTextField();
+		TfNomM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfNomM.getText().length() > 10){
+					TfNomM.setText("");
+					TfNomM.requestFocus();
+					lblMens4.setText("El nombre debe tener 10 caracteres como mucho");
+				}
+			}
+		});
+		TfNomM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[a-zA-Z]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE) ){
+					e.consume();
+					//TfApeI.requestFocus();		
+					TfNomM.setText("");
+					lblMens4.setText("No puede contener números"); 						
+				}
+			}
+		});
 		TfNomM.setColumns(10);
 		TfNomM.setBounds(330, 67, 86, 20);
 		ModDep.add(TfNomM);
 		
 		TfNDepM = new JTextField();
+		TfNDepM.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(TfNDepM.getText().length() > 2){
+					TfNDepM.setText("");
+					//TfNEmpI.requestFocus();
+					lblMens4.setText("El numero de departamento debe estar comprendido entre 1 y 99");
+				}
+			}
+		});
+		TfNDepM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String s1 = String.valueOf(e.getKeyChar());
+				if(!(s1.matches("[0-9]")) && (e.getKeyChar()!= KeyEvent.VK_BACK_SPACE)){
+					e.consume();
+					TfNDepM.requestFocus();		
+					TfNDepM.setText("");
+					lblMens4.setText("Solo puede contener números"); 
+				}
+			}
+		});
 		TfNDepM.setColumns(10);
 		TfNDepM.setBounds(330, 31, 86, 20);
 		ModDep.add(TfNDepM);
@@ -888,7 +1221,7 @@ public class VentanaPrincipal {
 		TfMidSal.setColumns(10);
 		
 		JLabel lblApellidoDelEmpleados = new JLabel("Apellido del empleado con salario maximo y salario maximo");
-		lblApellidoDelEmpleados.setBounds(34, 57, 283, 14);
+		lblApellidoDelEmpleados.setBounds(34, 57, 480, 14);
 		Estadisticas.add(lblApellidoDelEmpleados);
 		
 		TfMaxSal = new JTextField();
@@ -898,7 +1231,7 @@ public class VentanaPrincipal {
 		TfMaxSal.setColumns(10);
 		
 		JLabel lblApellidoDelEmpleados_1 = new JLabel("Apellido del empleado con salario minimo y salario minimo");
-		lblApellidoDelEmpleados_1.setBounds(34, 113, 275, 14);
+		lblApellidoDelEmpleados_1.setBounds(34, 113, 480, 14);
 		Estadisticas.add(lblApellidoDelEmpleados_1);
 		
 		TfMinSal = new JTextField();
@@ -908,12 +1241,12 @@ public class VentanaPrincipal {
 		TfMinSal.setColumns(10);
 		
 		JLabel lblNumeroDeDepartamentos = new JLabel("Numero de departamentos");
-		lblNumeroDeDepartamentos.setBounds(34, 172, 128, 14);
+		lblNumeroDeDepartamentos.setBounds(34, 172, 179, 14);
 		Estadisticas.add(lblNumeroDeDepartamentos);
 		
 		TfNumDeps = new JTextField();
 		TfNumDeps.setEditable(false);
-		TfNumDeps.setBounds(182, 169, 86, 20);
+		TfNumDeps.setBounds(234, 169, 86, 20);
 		Estadisticas.add(TfNumDeps);
 		TfNumDeps.setColumns(10);
 		
@@ -928,7 +1261,7 @@ public class VentanaPrincipal {
 		TfMaxEmps.setColumns(10);
 		
 		JLabel lblNombreDeDepartamento_1 = new JLabel("Nombre de departamento con menos empleados y numero de empleados");
-		lblNombreDeDepartamento_1.setBounds(34, 252, 348, 14);
+		lblNombreDeDepartamento_1.setBounds(34, 252, 480, 14);
 		Estadisticas.add(lblNombreDeDepartamento_1);
 		
 		TfMinEmps = new JTextField();

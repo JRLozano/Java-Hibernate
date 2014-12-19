@@ -70,11 +70,7 @@ public class MetodosEmp {
 			VentanaPrincipal.LimpiarEmp(2);
 		} else {
 			lbl.setText("El empleado ya existe");
-			//System.out.println(ConsultarEmp(nEmp).getApellido() + " - " + ConsultarEmp(nEmp).getSalario());
-		}
-		
-		
-		
+		}	
 	}
 	
 	public static void EliminarEmp(short nEmp, JLabel lbl){
@@ -116,7 +112,7 @@ public class MetodosEmp {
 			
 			VentanaPrincipal.LimpiarDep(1);
 			lbl.setText("El empleado ha sido modificado");
-		} else JOptionPane.showMessageDialog(null, "El empleado no existe");		
+		} else lbl.setText("El empleado no existe");		
 	}
 	
 	
